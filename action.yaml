@@ -1,0 +1,80 @@
+name: "IntegriMark Processing"
+description: "Process PDF files using IntegriMark and publish to GitHub Pages"
+branding:
+  icon: "lock"
+  color: "green"
+
+inputs:
+  base_url:
+    description: "Base URL for the IntegriMark vault. Defaults to https://<github-username>.github.io/<repo>/ if not provided."
+    required: false
+  files:
+    description: "Files to include in the IntegriMark command. Defaults to all PDFs in the repo."
+    required: false
+    default: "*.pdf"
+  domain:
+    description: "Custom domain for GitHub Pages. Leave unset for default GitHub domain."
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: "🔧 Setup Environment"
+      shell: bash
+      run: |
+        # Setup default base_url if not provided
+        if [ -z "${{ inputs.base_url }}" ]; then
+          GITHUB_USERNAME=$(echo $GITHUB_REPOSITORY | cut -f1 -d"/")
+          GITHUB_REPO=$(echo $GITHUB_REPOSITORY | cut -f2 -d"/")
+          BASE_URL="https://${GITHUB_USERNAME}.github.io/${GITHUB_REPO}/"
+        else
+          BASE_URL="${{ inputs.base_url }}"
+        fi
+        echo "Base URL: $BASE_URL"
+
+    - name: "📥 Checkout Repository"
+      uses: actions/checkout@v2
+
+    - name: "🐍 Set up Python"
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.x"
+
+    - name: "📦 Install IntegriMark"
+      run: pip install integrimark
+      shell: bash
+
+    - name: "📂 Prepare Files and Directories"
+      run: |
+        mkdir -p ./tmp/_bundle
+        if [ -f passwords.json ]; then
+          cp passwords.json ./tmp/_bundle/
+        fi
+      shell: bash
+
+    - name: "🚀 Run IntegriMark"
+      run: integrimark create --output_directory ./tmp --base_url ${BASE_URL} ${{ inputs.files }}
+      shell: bash
+
+    - name: "🔁 Copy passwords.json Back to Root"
+      run: cp ./tmp/_bundle/passwords.json ./passwords.json
+      shell: bash
+
+    - name: "📝 Commit passwords.json to Main Branch"
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add passwords.json
+        git commit -m "Update passwords.json"
+        git push
+      shell: bash
+
+    - name: "🌐 Publish to GitHub Pages"
+      uses: peaceiris/actions-gh-pages@v3.9.3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: ./tmp/_bundle
+        user_name: "github-actions[bot]"
+        user_email: "github-actions[bot]@users.noreply.github.com"
+        cname: ${{ inputs.domain }}
