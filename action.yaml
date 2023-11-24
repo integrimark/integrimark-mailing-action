@@ -19,12 +19,12 @@ inputs:
     description: "Set a generated GITHUB_TOKEN for pushing to the remote branch."
     required: false
   personal_token:
-    description: 'Set a personal access token for pushing to the remote branch.'
+    description: "Set a personal access token for pushing to the remote branch."
     required: false
   publish_branch:
-    description: 'Set a target branch for deployment.'
+    description: "Set a target branch for deployment."
     required: false
-    default: 'gh-pages'
+    default: "gh-pages"
 
 runs:
   using: "composite"
@@ -48,10 +48,12 @@ runs:
     - name: "🐍 Set up Python"
       uses: actions/setup-python@v2
       with:
-        python-version: "3.x"
-
+        python-version: "3.11"
+        
     - name: "📦 Install IntegriMark"
-      run: pip install integrimark
+      run: |
+        python -m pip install --upgrade pip setuptools
+        pip install integrimark
       shell: bash
 
     - name: "📂 Prepare Files and Directories"
