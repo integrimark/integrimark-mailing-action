@@ -36,11 +36,10 @@ runs:
         if [ -z "${{ inputs.base_url }}" ]; then
           GITHUB_USERNAME=$(echo $GITHUB_REPOSITORY | cut -f1 -d"/")
           GITHUB_REPO=$(echo $GITHUB_REPOSITORY | cut -f2 -d"/")
-          BASE_URL="https://${GITHUB_USERNAME}.github.io/${GITHUB_REPO}/"
+          echo "BASE_URL=https://${GITHUB_USERNAME}.github.io/${GITHUB_REPO}/" >> $GITHUB_ENV
         else
-          BASE_URL="${{ inputs.base_url }}"
+          echo "BASE_URL=${{ inputs.base_url }}" >> $GITHUB_ENV
         fi
-        echo "Base URL: $BASE_URL"
 
     - name: "📥 Checkout Repository"
       uses: actions/checkout@v2
@@ -65,7 +64,7 @@ runs:
       shell: bash
 
     - name: "🚀 Run IntegriMark"
-      run: integrimark create --output_directory ./tmp --base_url $BASE_URL ${{ inputs.files }}
+      run: integrimark create --output_directory ./tmp --base_url ${{ env.BASE_URL }} ${{ inputs.files }}
       shell: bash
 
     - name: "🔁 Copy passwords.json Back to Root"
