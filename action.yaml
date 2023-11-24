@@ -15,6 +15,16 @@ inputs:
   domain:
     description: "Custom domain for GitHub Pages. Leave unset for default GitHub domain."
     required: false
+  github_token:
+    description: "Set a generated GITHUB_TOKEN for pushing to the remote branch."
+    required: false
+  personal_token:
+    description: 'Set a personal access token for pushing to the remote branch.'
+    required: false
+  publish_branch:
+    description: 'Set a target branch for deployment.'
+    required: false
+    default: 'gh-pages'
 
 runs:
   using: "composite"
@@ -72,8 +82,9 @@ runs:
     - name: "🌐 Publish to GitHub Pages"
       uses: peaceiris/actions-gh-pages@v3.9.3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_branch: gh-pages
+        github_token: ${{ inputs.github_token }}
+        personal_token: ${{ inputs.personal_token }}
+        publish_branch: ${{ inputs.publish_branch }}
         publish_dir: ./tmp/_bundle
         user_name: "github-actions[bot]"
         user_email: "github-actions[bot]@users.noreply.github.com"
