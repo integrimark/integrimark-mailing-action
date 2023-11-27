@@ -211,6 +211,7 @@ def main():
         command += ["--no-send-mode"]
 
     # Execute the command
+    logger.info("🚀 Executing IntegriMark Mailing command...")
     result = subprocess.run(command, capture_output=True, text=True, shell=False)
     if result.returncode != 0:
         logger.error("❌  Error executing integrimark mail command:", result.stderr)
