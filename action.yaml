@@ -37,8 +37,8 @@ inputs:
   google_worksheet_index:
     description: "Worksheet index in the spreadsheet."
     required: false
-  service_account_json_path:
-    description: "Path to the service_account.json file to access Google's API."
+  service_account_json:
+    description: "Path to the service_account.json file to access Google's API, or full content of the JSON document."
     required: false
   email_column:
     description: "Column name or index for email addresses."

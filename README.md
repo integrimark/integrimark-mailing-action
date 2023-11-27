@@ -1,13 +1,12 @@
 # IntegriMark Mailing Action
 
-This GitHub Action automates the process of encrypting PDF files using IntegriMark and publishing them to GitHub Pages. It's designed to enhance the security and traceability of digital PDF documents by watermarking them with unique, user-specific details.
+This GitHub Action is part of the IntegriMark ecosystem. Once an IntegriMark vault has been set up (either manually, or using the [IntegriMark Publish Action](https://github.com/jlumbroso/integrimark-publish-action), this action will send an email to the specified recipients, with individualized links to the files in the vault.
 
 **CURRENTLY UNDER BETA-TESTING, PLEASE SEND FEEDBACK AND EXPECT BUG!**
 
-
 ## Contributing
 
-Contributions to the IntegriMark Action are welcome! Please submit a pull request with your changes.
+Contributions to the IntegriMark Mailing Action are welcome! Please submit a pull request with your changes.
 
 ## License
 
